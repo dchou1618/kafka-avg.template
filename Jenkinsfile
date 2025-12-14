@@ -25,8 +25,8 @@ pipeline {
       }
       steps {
         sh './gradlew clean build --no-daemon'
+        stash includes: 'app/build/libs/*.jar', name: 'jar'
       }
-      stash includes: 'app/build/libs/*.jar', name: 'jar'
     }
 
     stage('Docker Build & Push') {
