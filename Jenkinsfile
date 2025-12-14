@@ -52,9 +52,7 @@ pipeline {
 
   post {
     always {
-        node {
-          cleanWs()
-        }
+      cleanWs()
     }
     success {
         echo "Build and push successful!"
