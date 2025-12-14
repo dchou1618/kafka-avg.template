@@ -20,7 +20,7 @@ pipeline {
       agent {
         docker {
           image 'gradle:9.2.1-jdk21'
-          args '-v $HOME/.gradle:/home/gradle/.gradle' // optional cache mount
+          args '-v $HOME/.gradle:/home/gradle/.gradle'
         }
       }
       steps {
