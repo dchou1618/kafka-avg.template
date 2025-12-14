@@ -6,9 +6,6 @@ repos:
         entry: ktlint --format
         language: system
         types: [kotlin]
-
-  - repo: local
-    hooks:
       - id: gradle-build
         name: Gradle Build Check
         entry: ./gradlew build --quiet
