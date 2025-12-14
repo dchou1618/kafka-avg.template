@@ -1,3 +1,5 @@
+def dockerImage
+
 pipeline { 
     agent any
 
@@ -6,19 +8,12 @@ pipeline {
         DOCKER_REPO = "dchou1618/kafka-avg"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         DOCKER_CREDS = "dockerhub-credentials-id"
-        PATH = "/usr/local/bin:${env.PATH}"
     }
 
     stages {
         stage("Checkout") {
             steps {
                 checkout scm
-            }
-        }
-        stage('Check Docker') {
-            steps {
-                sh 'which docker'
-                sh 'docker --version'
             }
         }
         stage("Build") {
@@ -29,7 +24,9 @@ pipeline {
         stage("Docker Build") {
             steps {
                 script {
-                    dockerImage = docker.build("${DOCKER_REPO}:${IMAGE_TAG}")
+                    withEnv(["PATH=/usr/local/bin:${env.PATH}"]) {
+                        dockerImage = docker.build("${DOCKER_REPO}:${IMAGE_TAG}")
+                    }
                 }
             }
         }
