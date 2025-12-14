@@ -33,9 +33,11 @@ pipeline {
         stage("Docker Push") {
             steps {
                 script {
-                    docker.withRegistry(DOCKER_REGISTRY, DOCKER_CREDS) {
-                        dockerImage.push()
-                        dockerImage.push("latest")
+                    withEnv(["PATH=/usr/local/bin:${env.PATH}"]) {
+                        docker.withRegistry(DOCKER_REGISTRY, DOCKER_CREDS) {
+                            dockerImage.push()
+                            dockerImage.push("latest")
+                        }
                     }
                 }
             }
