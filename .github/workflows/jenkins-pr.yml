@@ -31,6 +31,8 @@ jobs:
       - name: Wait for Jenkins
         run: |
           until curl -s http://localhost:8080/login; do sleep 5; done
+      - name: Copy Jenkins job config XML into container
+        run: docker cp pr-test-job-config.xml jenkins:/workspace/pr-test-job-config.xml
 
       - name: Run Jenkinsfile
         run: |
