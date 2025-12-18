@@ -1,0 +1,40 @@
+name: Jenkins PR Validation
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  jenkins:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build Jenkins image
+        run: docker build -t jenkins-with-docker -f Dockerfile.jenkins .
+
+      - name: Run Jenkins
+        run: |
+          docker run -d \
+            --name jenkins \
+            -p 8080:8080 \
+            -p 50000:50000 \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v $PWD:/workspace \
+            -e JENKINS_OPTS="--argumentsRealm.passwd.admin=admin --argumentsRealm.roles.admin=admin" \
+            jenkins-with-docker
+
+      - name: Wait for Jenkins
+        run: |
+          until curl -s http://localhost:8080/login; do sleep 5; done
+
+      - name: Run Jenkinsfile
+        run: |
+          docker exec jenkins bash -c '
+            cd /workspace &&
+            jenkins-cli.sh -s http://localhost:8080 \
+              -auth admin:admin \
+              create-job pr-test < Jenkinsfile
+          '
