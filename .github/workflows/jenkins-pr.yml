@@ -1,6 +1,8 @@
 name: Jenkins PR Validation
 
 on:
+  push:
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
